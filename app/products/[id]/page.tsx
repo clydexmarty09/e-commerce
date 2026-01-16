@@ -1,10 +1,17 @@
-import { products } from "../../../data/products"; 
+import { products } from "@/data/products"; 
 
-export default function ProductDetailPage(
-{params}:{params:{id: string }}
+export default async function ProductDetailPage(
+{params}:{params: Promise<{id: string }>}
 
 ) {
-    const product = products.find((p) => p.id == params.id); 
+
+    const { id } = await params; 
+
+    //debugging
+    console.log("PRODUCTS", products); 
+    console.log("PARAMS ID:", id); 
+
+    const product = products.find((p) => p.id === id); 
     if(!product) {
         return (
             <main> 
