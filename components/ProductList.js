@@ -4,7 +4,7 @@ export default function ProductList ({products}) {
 
     return (
     <ul> 
-        {ProductList.map((p) => (
+        {products.map((p) => (
             <ProductItem key={p.id} products={p} />
         ))}
     </ul>
