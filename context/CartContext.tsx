@@ -40,8 +40,25 @@ const CartContext = createContext<CartContextValue | null>(null);
 /*
 create CartProvider function - a function that holds cart state and define cart logic 
 This will also render the real Provider 
+{children} is object destructuring - children is of type React.ReactNode; anything react can render 
 */
-
 export function CartProvider({children}: {children: React.ReactNode}) {
 
+    /*
+    useSate creates a state variable 
+    state = items
+    setter = setItems (function that updates the cart)
+    initial value = [] (empty cart)
+    state will always be an array of CartItem objects. The starting value is [] 
+    */
+    const [items, setItems] = useState<CartItem[]>([]); 
+    const addToCart = (product: Product)=> {
+
+        setItems((prev) => {
+            const existing = prev.find(
+
+                (ci) => ci.product.id === product.id
+            ); 
+        });
+    }; 
 }
