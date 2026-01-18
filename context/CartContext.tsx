@@ -63,7 +63,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
                 (cartItem) => cartItem.product.id === product.id // if the product is already in cart
             ); 
 
-            if (!existing) { // if product is already not in the cart 
+            if (!existing) { // if git product is already not in the cart 
                 return[...prev, { product, quantity: 1 }]; // add a brand new item
             }
 
