@@ -9,13 +9,16 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 // React is needed for React.ReactNode typing 
 
 export type Product = {
-    id: string, name: string, price:number, image?:string; 
+    id: string; 
+    name: string; 
+    price:number; 
+    image?:string; 
 }; 
 
 export type CartItem = {
     product : Product; 
     quantity : number; 
-}
+}; 
 
 // interface/menu for the cart 
 type CartContextValue = {  // CartContextValue is an object type 
@@ -54,10 +57,19 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     const [items, setItems] = useState<CartItem[]>([]); 
     const addToCart = (product: Product)=> {
 
-        setItems((prev) => {
+        setItems((prev) => { //use prev because it's guaranteed to be the latest state 
             const existing = prev.find(
 
-                (ci) => ci.product.id === product.id
+                (cartItem) => cartItem.product.id === product.id // if the product is already in cart
+            ); 
+
+            if (!existing) { // if product is already not in the cart 
+                return[...prev, { product, quantity: 1 }]; // add a brand new item
+            }
+
+            return prev.map((cartItem) => 
+                cartItem.product.id === product.id
+                ? {...cartItem, quantity: cartItem.quantity + 1} :  cartItem
             ); 
         });
     }; 
