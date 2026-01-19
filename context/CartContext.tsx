@@ -1,4 +1,5 @@
 "use client"; 
+import { clear } from "console";
 // code must run in the browser, not the server
 
 import React, { createContext, useContext, useMemo, useState } from "react"; 
@@ -27,7 +28,7 @@ type CartContextValue = {  // CartContextValue is an object type
     removeFromCart : (productID: string)=> void;  // function that takes in paramater productID of type string. returns nothing 
     clearCart : ()=> void; // clears cart - return nothing 
     getQuantity : (productId: string)=> number; // function that takes in parameter productID of type string. Returns a number
-    totalItems : number; // data -- totalItems of type number 
+    total : number; // data -- totalItems of type number 
 }
 
 /*
@@ -109,4 +110,40 @@ export function CartProvider({children}: {children: React.ReactNode}) {
             items.find((cartItem) => cartItem.product.id === productID)?.quantity ?? 0
         ); 
    }; 
+
+   //reduce() turns ana array into a single value 
+   const total = items.reduce((sum, cartItems) => sum + cartItems.quantity, 0);
+   
+   /*
+   useMemo() remebers the result of the function and only recomputes it when certain values change
+   create one cart object and keep using the same one, unless the cart contents actually change
+    */
+   const value = useMemo(
+    ()=> ({  // ()=> ({}) means object being returned 
+        items, addToCart, removeFromCart, clearCart, getQuantity, total, 
+    }), [items, total] // only rvaecompute if something HERE changes 
+   );
+   
+   return (
+    /*
+    render whatever is wrapped inside CartContext.Provider 
+    everything inside this provider will be able to access the cart object
+    */
+    <CartContext.Provider value={value}> 
+        {children} 
+    </CartContext.Provider>
+   ); 
+}
+
+/*
+declare custom React hook - MUST START WITH "use"
+ctx looks up the component tree, finds the nearest <CartContext.Provider>, and returns value
+otherwise THROW an error
+*/
+export function useCart() {
+        
+    const ctx = useContext(CartContext); 
+    if(!ctx) throw new Error("Use cart must be used inside <CartProvider>"); 
+
+    return ctx; 
 }
