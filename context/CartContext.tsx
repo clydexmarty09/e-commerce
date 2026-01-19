@@ -67,10 +67,32 @@ export function CartProvider({children}: {children: React.ReactNode}) {
                 return[...prev, { product, quantity: 1 }]; // add a brand new item
             }
 
-            return prev.map((cartItem) => 
+            return prev.map((cartItem) => // no brackets = implicit return  
+                //if the IDs match, return a new object with increased quantity, otherwise, return original cartItem 
                 cartItem.product.id === product.id
                 ? {...cartItem, quantity: cartItem.quantity + 1} :  cartItem
             ); 
         });
+    };
+    
+    /*
+    removeFromCart funtion
+    */
+    const removeFromCart = (prouctID : string)=> {
+
+
     }; 
+
+    /*
+    clearCart function
+    */
+    const clearCart = ()=> {
+
+    }; 
+    /*
+    getQuantity function
+    */
+   const getQuantity = (productID: string)=> {
+
+   }; 
 }
