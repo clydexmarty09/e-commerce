@@ -55,6 +55,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     state will always be an array of CartItem objects. The starting value is [] 
     */
     const [items, setItems] = useState<CartItem[]>([]); 
+    
     const addToCart = (product: Product)=> {
 
         setItems((prev) => { //use prev because it's guaranteed to be the latest state 
@@ -97,8 +98,15 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     }; 
     /*
     getQuantity function
+    look for product in the cart
+    if it doesn't exists, return 0 
     */
    const getQuantity = (productID: string)=> {
+        return (
 
+            // ?. is optional chaining - if value is undefined, stop and return undefined
+            // ?? is the fallback value - if value is null or undefined, return 0 
+            items.find((cartItem) => cartItem.product.id === productID)?.quantity ?? 0
+        ); 
    }; 
 }
