@@ -3,7 +3,7 @@ import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
 
-    const { items } = useCart(); 
+    const { items, total } = useCart(); 
     
     if(items.length==0) {
         return(
@@ -21,7 +21,9 @@ export default function CartPage() {
                 <p> quantity: {item.quantity} </p>
            </div>
         ))}
+        <p> Total items: {total} </p>
        </div> 
+       
     ); 
     
 }
