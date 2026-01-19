@@ -78,16 +78,22 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     /*
     removeFromCart funtion
     */
-    const removeFromCart = (prouctID : string)=> {
-
-
+    const removeFromCart = (productID : string)=> {
+        setItems((prev)=> 
+            prev.map((cartItem)=>  // create a new array .map visits evert cart item  = "cart item"
+                cartItem.product.id === productID // if match
+                ? {...cartItem, quantity: cartItem.quantity -1} : cartItem // return new object with quantity -1, else return original item
+            
+            )
+            .filter((cartItem)=> cartItem.quantity > 0) // only return objects where quantity > 0
+        ); 
     }; 
 
     /*
     clearCart function
     */
     const clearCart = ()=> {
-
+        setItems([]); // replace with brand new empty array 
     }; 
     /*
     getQuantity function
