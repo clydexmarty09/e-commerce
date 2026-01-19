@@ -3,7 +3,7 @@ import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
 
-    const { items, total } = useCart(); 
+    const { items, total, clearCart } = useCart(); 
     
     if(items.length==0) {
         return(
@@ -22,6 +22,11 @@ export default function CartPage() {
            </div>
         ))}
         <p> Total items: {total} </p>
+        <div> 
+            <button onClick= {()=> {clearCart()}}>
+            Clear Cart
+            </button>
+        </div>
        </div> 
        
     ); 

@@ -1,9 +1,10 @@
+"use client"; 
 import {products} from "../data/products"; 
 import ProductItem from "../components/ProductItem"
 import ProductList from "../components/ProductList"
 import Link from "next/link"; 
 import { useCart } from "@/context/CartContext"; 
-import DebugCart  from "@/components/DebugCart"; 
+//import DebugCart  from "@/components/DebugCart"; 
 
 export default function Home() {
 
@@ -14,7 +15,7 @@ export default function Home() {
     <h1> Products</h1>
     <ProductList products= {products} />
     <Link href="/cart"> Go To Cart ({total})</Link> 
-    <DebugCart /> 
+    
   </main>
-  );
+  )
 }
