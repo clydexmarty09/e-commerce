@@ -3,7 +3,7 @@ import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
 
-    const { items, total, clearCart } = useCart(); 
+    const { items, total, clearCart, addToCart, removeFromCart } = useCart(); 
     
     if(items.length==0) {
         return(
@@ -12,23 +12,27 @@ export default function CartPage() {
         ); 
     }
 
+    /*
+    the add and remove buttons need to be inside the map so it encapulates each individual item
+    */
     return(
         <div>
         {items.map((item) => (
 
             <div key ={item.product.id}>
                 <p> name: {item.product.name} </p>
-                <p> quantity: {item.quantity} </p>
+                 <button onClick = {()=> {removeFromCart(item.product.id)}}> [-] </button>
+                <span> {item.quantity}</span>
+                <button onClick = {()=> {addToCart(item.product)}}> [+] </button>
+                <span> {item.quantity} </span>
+             
            </div>
         ))}
         <p> Total items: {total} </p>
-        <div> 
-            <button onClick= {()=> {clearCart()}}>
-            Clear Cart
-            </button>
-        </div>
+        <button onClick= {()=> {clearCart()}}>
+        Clear Cart
+        </button>
        </div> 
-       
     ); 
     
 }
