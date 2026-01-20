@@ -24,7 +24,7 @@ export default function CartPage() {
                  <button onClick = {()=> {removeFromCart(item.product.id)}}> [-] </button>
                 <span> {item.quantity}</span>
                 <button onClick = {()=> {addToCart(item.product)}}> [+] </button>
-                <span> {item.quantity} </span>
+              
              
            </div>
         ))}

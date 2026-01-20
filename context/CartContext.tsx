@@ -1,13 +1,14 @@
 "use client"; 
-import { clear } from "console";
 // code must run in the browser, not the server
 
-import React, { createContext, useContext, useMemo, useState } from "react"; 
+import React, { createContext, useContext, useMemo, useState, useEffect } from "react"; 
 // createContext = creates global pipe that carries cart data
 // useContext lets a component tap into the pipe
 // useState stores the cart array in memory 
 // useMemo -- avoids recreating the context value object every render 
 // React is needed for React.ReactNode typing 
+
+const CART_STORAGE_KEY = "cartItems"; 
 
 export type Product = {
     id: string; 
@@ -38,6 +39,7 @@ CartContextValue, but for now it might be null. This is because we passed in nul
 CartContext is an object with .Provider component  
 Provider is a React component that supplies real cart data, null is a fallback value returned when no Provided exists
 upon writing this, we create CartContext.Provider and CartContext.Consumer 
+
 */
 const CartContext = createContext<CartContextValue | null>(null); 
 
@@ -54,8 +56,20 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     setter = setItems (function that updates the cart)
     initial value = [] (empty cart)
     state will always be an array of CartItem objects. The starting value is [] 
+
+    add "lazy initialization so it only reads localStorage"
     */
-    const [items, setItems] = useState<CartItem[]>([]); 
+    const [items, setItems] = useState<CartItem[]>(()=> {
+        if(typeof window === "undefined") return []; // localStorage only runs in browser 
+
+        // use try/catch prevets corrupted JSON from breaking the app 
+        try {
+            const stored = localStorage.getItem(CART_STORAGE_KEY); 
+            return stored ? JSON.parse(stored): []; // if something was stored->convert string->JS object
+        } catch {
+            return []; 
+        }
+    }) ; 
     
     const addToCart = (product: Product)=> {
 
@@ -96,6 +110,10 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     */
     const clearCart = ()=> {
         setItems([]); // replace with brand new empty array 
+
+        try {
+            localStorage.removeItem(CART_STORAGE_KEY); 
+        } catch {}
     }; 
     /*
     getQuantity function
@@ -123,7 +141,19 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         items, addToCart, removeFromCart, clearCart, getQuantity, total, 
     }), [items, total] // only rvaecompute if something HERE changes 
    );
-   
+
+   /*
+   whenever something happens, run this side effect code 
+   side effect = saving to localStorage
+   run this everytime [items] changes 
+   */
+   useEffect(() => {
+
+        try {
+             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items)); 
+        } catch  { } // ignore write errors 
+   }, [items]); 
+
    return (
     /*
     render whatever is wrapped inside CartContext.Provider 
@@ -133,6 +163,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         {children} 
     </CartContext.Provider>
    ); 
+
 }
 
 /*
