@@ -59,8 +59,8 @@ export function CartProvider({children}: {children: React.ReactNode}) {
 
     add "lazy initialization so it only reads localStorage"
     */
-    const [items, setItems] = useState<CartItem[]>(()=> {
-        if(typeof window === "undefined") return []; // localStorage only runs in browser 
+    const [items, setItems] = useState<CartItem[]>([]); 
+        /* if(typeof window === "undefined") return []; // localStorage only runs in browser 
 
         // use try/catch prevets corrupted JSON from breaking the app 
         try {
@@ -69,7 +69,9 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         } catch {
             return []; 
         }
-    }) ; 
+    }) ; */
+
+    const [hydrated, setHydrated] = useState(false); 
     
     const addToCart = (product: Product)=> {
 
@@ -150,9 +152,23 @@ export function CartProvider({children}: {children: React.ReactNode}) {
    useEffect(() => {
 
         try {
-             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items)); 
-        } catch  { } // ignore write errors 
-   }, [items]); 
+            const stored = localStorage.getItem(CART_STORAGE_KEY); 
+            if(stored) setItems(JSON.parse(stored)); 
+        } catch {}
+
+        setHydrated(true); 
+
+   }, []); 
+
+   useEffect(()=> {
+
+        if(!hydrated) return; 
+
+        try {
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+        } catch {}
+
+   }, [items, hydrated]); 
 
    return (
     /*
