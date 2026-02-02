@@ -29,6 +29,7 @@ type CartContextValue = {  // CartContextValue is an object type
     removeFromCart : (productID: string)=> void;  // function that takes in paramater productID of type string. returns nothing 
     clearCart : ()=> void; // clears cart - return nothing 
     getQuantity : (productId: string)=> number; // function that takes in parameter productID of type string. Returns a number
+    removeItem: (productId: string) => void; // removes specific item from cart
     total : number; // data -- totalItems of type number 
 }
 
@@ -107,6 +108,11 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         ); 
     }; 
 
+    const removeItem = (productID : string) => {
+        setItems((prev) => 
+            prev.filter((item) => item.product.id !== productID)
+    )}; 
+
     /*
     clearCart function
     */
@@ -140,7 +146,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     */
    const value = useMemo(
     ()=> ({  // ()=> ({}) means object being returned 
-        items, addToCart, removeFromCart, clearCart, getQuantity, total, 
+        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem
     }), [items, total] // only rvaecompute if something HERE changes 
    );
 

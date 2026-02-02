@@ -24,13 +24,14 @@ export default function CheckoutPage() {
                 {items.map ((item) =>(
 
                     <li key={item.product.id}> 
-                    {item.product.name} - qty: {item.quantity}
+                    {item.product.name} - qty: {item.quantity} - 
+                    <span> ${item.product.price * item.quantity}</span>
                     </li>
                 ))}
             </ul>
 
             <p> Total items: { total } </p>
-            <p> Total price: { totalPrice} </p>
+            <p> Total price: ${ totalPrice} </p>
             
         </main>
     )
