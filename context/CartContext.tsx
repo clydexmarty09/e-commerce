@@ -22,6 +22,14 @@ export type CartItem = {
     quantity : number; 
 }; 
 
+/* add export Order type for ordering logic*/
+export type Order = {
+    id: string; 
+    createdAt: number; 
+    items: CartItem[]; 
+    totalPrice: number; 
+} 
+
 // interface/menu for the cart 
 type CartContextValue = {  // CartContextValue is an object type 
     items : CartItem[];  // items is a list of CartItem
@@ -31,6 +39,8 @@ type CartContextValue = {  // CartContextValue is an object type
     getQuantity : (productId: string)=> number; // function that takes in parameter productID of type string. Returns a number
     removeItem: (productId: string) => void; // removes specific item from cart
     total : number; // data -- totalItems of type number 
+
+    placeOrder:() => Order | null; // context promises that it provides a placeholder function
 }
 
 /*
@@ -137,6 +147,21 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         ); 
    }; 
 
+   const placeOrder = (): Order | null => {
+        if (items.length === 0) {
+            return null; 
+        }
+
+        const totalPrice = items.reduce((sum, item) => {
+            return sum + item.product.price * item.quantity; 
+        }, 0); 
+
+        const order: Order = {
+            id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice,
+        }; 
+        return order; 
+   }; 
+
    //reduce() turns ana array into a single value 
    const total = items.reduce((sum, cartItems) => sum + cartItems.quantity, 0);
    
@@ -146,7 +171,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     */
    const value = useMemo(
     ()=> ({  // ()=> ({}) means object being returned 
-        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem
+        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder
     }), [items, total] // only rvaecompute if something HERE changes 
    );
 
