@@ -158,7 +158,8 @@ export function CartProvider({children}: {children: React.ReactNode}) {
 
         const order: Order = {
             id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice,
-        }; 
+        };
+        clearCart();  
         return order; 
    }; 
 
