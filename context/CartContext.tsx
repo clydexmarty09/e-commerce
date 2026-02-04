@@ -8,7 +8,8 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 // useMemo -- avoids recreating the context value object every render 
 // React is needed for React.ReactNode typing 
 
-const CART_STORAGE_KEY = "cartItems"; 
+const CART_STORAGE_KEY = "cartItems";
+const ORDERS_STORAGE_KEY= "orders"; 
 
 export type Product = {
     id: string; 
@@ -41,6 +42,7 @@ type CartContextValue = {  // CartContextValue is an object type
     total : number; // data -- totalItems of type number 
 
     placeOrder:() => Order | null; // context promises that it provides a placeholder function
+    orders: Order[]
 }
 
 /*
@@ -82,6 +84,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         }
     }) ; */
 
+    const [orders, setOrders] = useState<Order[]>([]);  // add orders state
     const [hydrated, setHydrated] = useState(false); 
     
     const addToCart = (product: Product)=> {
@@ -159,6 +162,12 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         const order: Order = {
             id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice,
         };
+
+        setOrders((prev) =>{
+            const updated = [order, ...prev]
+            localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(updated))
+            return updated; 
+        })
         clearCart();  
         return order; 
    }; 
@@ -172,7 +181,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     */
    const value = useMemo(
     ()=> ({  // ()=> ({}) means object being returned 
-        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder
+        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder, orders
     }), [items, total] // only rvaecompute if something HERE changes 
    );
 
@@ -201,6 +210,23 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         } catch {}
 
    }, [items, hydrated]); 
+
+   useEffect(() => {
+        try {
+            const raw = localStorage.getItem(ORDERS_STORAGE_KEY); 
+            if(!raw) return; 
+
+            const parsed = JSON.parse(raw); 
+
+            //only accept arrays 
+            if (Array.isArray(parsed)) {
+                setOrders(parsed); 
+            }
+        } catch (e) {
+            console.error("Failed to load orders from local storage"), e; 
+        }
+        // load orders once 
+   }, []); 
 
    return (
     /*

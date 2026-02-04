@@ -13,11 +13,11 @@ export default function CheckoutPage() {
             <main> 
                 <h1> Order confirmed </h1>
                 <p> Order ID: {order.id} </p>
-                <p> Total Price: {order.totalPrice} </p>
+                <p> Total Price: ${order.totalPrice} </p>
 
                 <h2> Items </h2>
                 <ul> 
-                    {items.map((item)=> (
+                    {order.items.map((item)=> (
                         <li key={item.product.id}> 
                         {item.product.name} - qty: {item.quantity} 
                         </li>
