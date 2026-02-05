@@ -18,4 +18,22 @@ export default function OrderDetailsPage(
             </main>
         ); 
     }
+
+    return (
+        <main> 
+            <h1> Order Detail</h1>
+            <p> ID: {order.id} </p>
+            <p> Total Price: ${order.totalPrice}</p>
+            
+            <h2> Items</h2>
+            <ul> 
+                {order.items.map(item=> (
+                    <li key={item.product.id}>
+                        {item.product.name} - {item.quantity}
+                    </li>
+                ))}
+            </ul>
+            <Link href="/orders"> Back to Orders </Link>
+        </main>
+    )
 }
