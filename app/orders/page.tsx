@@ -3,7 +3,7 @@
 import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
 
-export function OrderPage() {
+export default function OrderPage() {
 
     const { orders } = useCart(); 
     if (orders.length === 0) {

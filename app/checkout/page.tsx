@@ -1,13 +1,16 @@
 "use client"; 
 import { useCart, Order } from "@/context/CartContext";
-import { useState } from "react"; 
+// import { useState } from "react"; 
 import Link from "next/link"; 
+import { useRouter } from "next/navigation";  
 
 export default function CheckoutPage() {
     
+    const router = useRouter(); 
     const { items, total, placeOrder } =  useCart(); 
-    const [order, setOrder] = useState<Order | null>(null); 
+   // const [order, setOrder] = useState<Order | null>(null); 
     
+    /*
     if(order) {
         return (
             <main> 
@@ -26,7 +29,7 @@ export default function CheckoutPage() {
                 <Link href="/"> Continue Shopping</Link>
             </main>
         ); 
-    }
+    } */ 
     
     if (items.length === 0 ) {
         return  (
@@ -64,7 +67,8 @@ export default function CheckoutPage() {
             <button
             onClick={()=> {
                 const newOrder = placeOrder(); 
-                setOrder(newOrder); 
+                if(!newOrder) return; 
+                router.push(`/orders/${newOrder.id}`); // router.push() navigates to path
             }}> Place Order </button>
             
         </main>
