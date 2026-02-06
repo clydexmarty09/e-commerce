@@ -2,13 +2,12 @@
 
 import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
+import { useParams } from "next/navigation"; 
 
-export default function OrderDetailsPage(
-    { params }: { params: { id: string }}
-) {
-
+export default function OrderDetailsPage() {
+    const { id } = useParams<{ id: string }>(); // gives already resolved routhe params from client router
     const { orders } = useCart(); 
-    const order = orders.find(o=>o.id===params.id); 
+    const order = orders.find(o=> o.id === id); 
 
     if (!order) {
         return (
