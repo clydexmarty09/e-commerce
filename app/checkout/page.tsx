@@ -67,7 +67,7 @@ export default function CheckoutPage() {
             <p> Total items: { total } </p>
             <p> Total price: ${ totalPrice} </p>
             <button
-            disabled={items.length===0}
+            disabled={items.length===0 || isPlacing}
             onClick={()=> {
                 if (isPlacing) return; 
                 setIsPlacing(true); 
