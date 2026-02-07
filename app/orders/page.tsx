@@ -22,8 +22,10 @@ export default function OrderPage() {
                 <ul> 
                     {orders.map((order)=> (
                         <li key={order.id}> 
+                            <p> Date ordered: {new Date(order.createdAt).toLocaleString()}</p>
+                            <p> Item count: {order.items.reduce((s,i)=> s+i.quantity,0)}</p>
                             <p> ID: {order.id} </p>
-                            <p> Total Price: {order.totalPrice}</p>
+                            <p> Total Price: ${order.totalPrice}</p>
                             <Link href={`/orders/${order.id}`}> View Order</Link>
                         </li>
                     ))}

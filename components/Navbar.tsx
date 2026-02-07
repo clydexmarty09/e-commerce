@@ -10,7 +10,9 @@ export default function Nav() {
 
         <nav> 
             <Link href="/"> Home</Link> { "|" }
-            <Link href="/cart"> Cart ({total})</Link>
+            <Link href="/cart"> Cart ({total})</Link> {"|"}
+            <Link href="/orders"> Orders</Link>
+
         </nav>
 
     );  
