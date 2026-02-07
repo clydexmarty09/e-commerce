@@ -1,11 +1,13 @@
 "use client"; 
-import { useCart, Order } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext";
 // import { useState } from "react"; 
 import Link from "next/link"; 
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation"; 
+import { useState } from "react";  
 
 export default function CheckoutPage() {
     
+    const [isPlacing, setIsPlacing] = useState(false); 
     const router = useRouter(); 
     const { items, total, placeOrder } =  useCart(); 
    // const [order, setOrder] = useState<Order | null>(null); 
@@ -65,11 +67,18 @@ export default function CheckoutPage() {
             <p> Total items: { total } </p>
             <p> Total price: ${ totalPrice} </p>
             <button
+            disabled={items.length===0}
             onClick={()=> {
+                if (isPlacing) return; 
+                setIsPlacing(true); 
+
                 const newOrder = placeOrder(); 
-                if(!newOrder) return; 
+                if(!newOrder) {
+                    setIsPlacing(false); 
+                    return; 
+                }
                 router.push(`/orders/${newOrder.id}`); // router.push() navigates to path
-            }}> Place Order </button>
+            }}> {isPlacing ? "Placing...": "Place Order"} </button>
             
         </main>
     ); 
