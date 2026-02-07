@@ -1,5 +1,6 @@
 "use client"; 
 import { useCart } from "@/context/CartContext"; 
+import { formatMoney } from "@/utils/format"; 
 
 export default function CartPage() {
 
@@ -27,7 +28,7 @@ export default function CartPage() {
         return (
             <div key={item.product.id}>
             <p> name: {item.product.name} </p>
-            <p> Unit Price: ${item.product.price.toFixed(2)} </p>
+            <p> Unit Price: {formatMoney(item.product.price)} </p>
             <p> Subtotal: ${lineSubtotal.toFixed(2)} </p>
 
             <button

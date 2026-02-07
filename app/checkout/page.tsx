@@ -3,7 +3,8 @@ import { useCart } from "@/context/CartContext";
 // import { useState } from "react"; 
 import Link from "next/link"; 
 import { useRouter } from "next/navigation"; 
-import { useState } from "react";  
+import { useState } from "react"; 
+import { formatMoney } from "@/utils/format";  
 
 export default function CheckoutPage() {
     
@@ -65,7 +66,7 @@ export default function CheckoutPage() {
             </ul>
 
             <p> Total items: { total } </p>
-            <p> Total price: ${ totalPrice} </p>
+            <p> Total price: {formatMoney(totalPrice)} </p>
             <button
             disabled={items.length===0 || isPlacing}
             onClick={async()=> {

@@ -2,6 +2,7 @@
 
 import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
+import { formatMoney } from "@/utils/format"; 
 
 export default function OrderPage() {
 
@@ -25,7 +26,7 @@ export default function OrderPage() {
                             <p> Date ordered: {new Date(order.createdAt).toLocaleString()}</p>
                             <p> Item count: {order.items.reduce((s,i)=> s+i.quantity,0)}</p>
                             <p> ID: {order.id} </p>
-                            <p> Total Price: ${order.totalPrice}</p>
+                            <p> Total Price: {formatMoney(order.totalPrice)}</p>
                             <Link href={`/orders/${order.id}`}> View Order</Link>
                         </li>
                     ))}
