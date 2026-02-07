@@ -68,11 +68,11 @@ export default function CheckoutPage() {
             <p> Total price: ${ totalPrice} </p>
             <button
             disabled={items.length===0 || isPlacing}
-            onClick={()=> {
+            onClick={async()=> {
                 if (isPlacing) return; 
                 setIsPlacing(true); 
 
-                const newOrder = placeOrder(); 
+                const newOrder = await placeOrder(); 
                 if(!newOrder) {
                     setIsPlacing(false); 
                     return; 

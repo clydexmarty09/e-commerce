@@ -41,7 +41,7 @@ type CartContextValue = {  // CartContextValue is an object type
     removeItem: (productId: string) => void; // removes specific item from cart
     total : number; // data -- totalItems of type number 
 
-    placeOrder:() => Order | null; // context promises that it provides a placeholder function
+    placeOrder: () =>Promise<Order | null>; // context promises that it provides a placeholder function
     orders: Order[]
 }
 
@@ -150,10 +150,12 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         ); 
    }; 
 
-   const placeOrder = (): Order | null => {
+   const placeOrder = async (): Promise<Order | null> => {
         if (items.length === 0) {
             return null; 
         }
+
+        await new Promise((resolve)=> setTimeout(resolve, 800)); 
 
         const totalPrice = items.reduce((sum, item) => {
             return sum + item.product.price * item.quantity; 
@@ -182,7 +184,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
    const value = useMemo(
     ()=> ({  // ()=> ({}) means object being returned 
         items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder, orders
-    }), [items, total] // only rvaecompute if something HERE changes 
+    }), [items, total, orders] // only rvaecompute if something HERE changes 
    );
 
    /*
