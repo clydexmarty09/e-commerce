@@ -11,28 +11,7 @@ export default function CheckoutPage() {
     const [isPlacing, setIsPlacing] = useState(false); 
     const router = useRouter(); 
     const { items, total, placeOrder } =  useCart(); 
-   // const [order, setOrder] = useState<Order | null>(null); 
-    
-    /*
-    if(order) {
-        return (
-            <main> 
-                <h1> Order confirmed </h1>
-                <p> Order ID: {order.id} </p>
-                <p> Total Price: ${order.totalPrice} </p>
-
-                <h2> Items </h2>
-                <ul> 
-                    {order.items.map((item)=> (
-                        <li key={item.product.id}> 
-                        {item.product.name} - qty: {item.quantity} 
-                        </li>
-                    ))}
-                </ul>
-                <Link href="/"> Continue Shopping</Link>
-            </main>
-        ); 
-    } */ 
+    const [error, setError] = useState<string | null>(null); 
     
     if (items.length === 0 ) {
         return  (
@@ -67,20 +46,30 @@ export default function CheckoutPage() {
 
             <p> Total items: { total } </p>
             <p> Total price: {formatMoney(totalPrice)} </p>
+            {error &&<p>{error} </p>} {/*only display error if it exists   */}
             <button
             disabled={items.length===0 || isPlacing}
             onClick={async()=> {
+
+                setError(null);
                 if (isPlacing) return; 
                 setIsPlacing(true); 
 
-                const newOrder = await placeOrder(); 
-                if(!newOrder) {
-                    setIsPlacing(false); 
-                    return; 
-                }
-                router.push(`/orders/${newOrder.id}`); // router.push() navigates to path
-            }}> {isPlacing ? "Placing...": "Place Order"} </button>
-            
+                try {
+                    const newOrder = await placeOrder(); 
+                    if(!newOrder) {
+                        setIsPlacing(false); 
+                        return; 
+                    }
+                    router.push(`/orders/${newOrder.id}`); // router.push() navigates to path
+            } catch (e) {
+                setError("Something went wrong.") 
+
+            } finally {
+                setIsPlacing(false); 
+            }
+            }}> {isPlacing ? "Placing...": "Place Order"} </button>  
+        
         </main>
     ); 
 }
