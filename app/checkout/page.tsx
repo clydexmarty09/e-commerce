@@ -1,6 +1,5 @@
 "use client"; 
 import { useCart } from "@/context/CartContext";
-// import { useState } from "react"; 
 import Link from "next/link"; 
 import { useRouter } from "next/navigation"; 
 import { useState } from "react"; 
@@ -11,7 +10,12 @@ export default function CheckoutPage() {
     const [isPlacing, setIsPlacing] = useState(false); 
     const router = useRouter(); 
     const { items, total, placeOrder } =  useCart(); 
-    const [error, setError] = useState<string | null>(null); 
+    const [error, setError] = useState<string | null>(null);
+    
+    //checkout user infomation
+    const [name, setName] = useState(""); 
+    const [email, setEmail] = useState(""); 
+    const [address, setAddress] = useState(""); 
     
     if (items.length === 0 ) {
         return  (
@@ -47,6 +51,35 @@ export default function CheckoutPage() {
             <p> Total items: { total } </p>
             <p> Total price: {formatMoney(totalPrice)} </p>
             {error &&<p>{error} </p>} {/*only display error if it exists   */}
+            
+            <label> 
+                Name: 
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e)=> setName(e.target.value)}
+                />
+            </label>
+            <br/>
+            <label> 
+                Email:
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e)=> setEmail(e.target.value)}
+                />
+            </label>
+            <br/>
+            <label> 
+                Adress: 
+                <input
+                    type="text"
+                    value={address}
+                    onChange={(e)=> setAddress(e.target.value)}
+                />
+            </label>
+            <br/>
+
             <button
             disabled={items.length===0 || isPlacing}
             onClick={async()=> {
