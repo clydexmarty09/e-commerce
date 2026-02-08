@@ -35,6 +35,9 @@ export default function CheckoutPage() {
     }, 0);
 
     // map array in JSX, and use stable key
+    const isFormValid =  
+        name.trim().length>0 && address.trim().length>0 && email.trim().length>0; 
+    
     return (
         <main> 
             <h1> Checkout</h1>
@@ -50,14 +53,17 @@ export default function CheckoutPage() {
 
             <p> Total items: { total } </p>
             <p> Total price: {formatMoney(totalPrice)} </p>
-            {error &&<p>{error} </p>} {/*only display error if it exists   */}
+            {error && <p>{error} </p>} {/*only display error if it exists   */}
             
             <label> 
                 Name: 
                 <input
                     type="text"
                     value={name}
-                    onChange={(e)=> setName(e.target.value)}
+                    onChange={(e)=> {
+                        setName(e.target.value)
+                        setError(null); 
+                    }}
                 />
             </label>
             <br/>
@@ -66,7 +72,10 @@ export default function CheckoutPage() {
                 <input
                     type="email"
                     value={email}
-                    onChange={(e)=> setEmail(e.target.value)}
+                    onChange={(e)=> {
+                        setEmail(e.target.value)
+                        setError(null); 
+                    }} //onChange = event handler that runs when an input's value changes
                 />
             </label>
             <br/>
@@ -75,7 +84,10 @@ export default function CheckoutPage() {
                 <input
                     type="text"
                     value={address}
-                    onChange={(e)=> setAddress(e.target.value)}
+                    onChange={(e)=> { 
+                        setAddress(e.target.value)
+                        setError(null); 
+                    }}
                 />
             </label>
             <br/>
@@ -84,12 +96,20 @@ export default function CheckoutPage() {
             disabled={items.length===0 || isPlacing}
             onClick={async()=> {
 
+                if(!isFormValid) {
+                    setError("Please fill in the required forms."); 
+                    return; 
+                }
+
                 setError(null);
                 if (isPlacing) return; 
                 setIsPlacing(true); 
 
+
                 try {
-                    const newOrder = await placeOrder(); 
+                    const newOrder = await placeOrder({
+                        name: name.trim(), email: email.trim(), address: address.trim(), 
+                    }); 
                     if(!newOrder) {
                         setIsPlacing(false); 
                         return; 

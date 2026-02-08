@@ -31,6 +31,12 @@ export type Order = {
     totalPrice: number; 
 } 
 
+export type CustomerInfo = {
+    name: string; 
+    address: string; 
+    email: string; 
+}
+
 // interface/menu for the cart 
 type CartContextValue = {  // CartContextValue is an object type 
     items : CartItem[];  // items is a list of CartItem
@@ -41,7 +47,7 @@ type CartContextValue = {  // CartContextValue is an object type
     removeItem: (productId: string) => void; // removes specific item from cart
     total : number; // data -- totalItems of type number 
 
-    placeOrder: () =>Promise<Order | null>; // context promises that it provides a placeholder function
+    placeOrder: (customer: CustomerInfo) =>Promise<Order | null>; // context promises that it provides a placeholder function
     orders: Order[]
 }
 
@@ -150,7 +156,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         ); 
    }; 
 
-   const placeOrder = async (): Promise<Order | null> => {
+   const placeOrder = async (customer: CustomerInfo): Promise<Order | null> => {
         if (items.length === 0) {
             return null; 
         }
@@ -225,7 +231,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
                 setOrders(parsed); 
             }
         } catch (e) {
-            console.error("Failed to load orders from local storage"), e; 
+            console.error("Failed to load orders from local storage", e); 
         }
         // load orders once 
    }, []); 
