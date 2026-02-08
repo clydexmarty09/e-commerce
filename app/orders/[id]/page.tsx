@@ -21,8 +21,11 @@ export default function OrderDetailsPage() {
 
     return (
         <main> 
+            <h1> Thank You, {order.customer.name} !</h1>
             <h1> Order Detail</h1>
+            <p> A confirmation was sent to {order.customer.email} </p>
             <p> ID: {order.id} </p>
+            <p> Delivery to: {order.customer.address} </p>
             <p> Total Price: {formatMoney(order.totalPrice)}</p>
             
             <h2> Items</h2>

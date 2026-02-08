@@ -29,6 +29,7 @@ export type Order = {
     createdAt: number; 
     items: CartItem[]; 
     totalPrice: number; 
+    customer: CustomerInfo; 
 } 
 
 export type CustomerInfo = {
@@ -168,7 +169,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         }, 0); 
 
         const order: Order = {
-            id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice,
+            id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice, customer
         };
 
         setOrders((prev) =>{
