@@ -2,7 +2,8 @@
 
 import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
-import { useParams } from "next/navigation"; 
+import { useParams } from "next/navigation";
+import { formatMoney } from "@/utils/format";   
 
 export default function OrderDetailsPage() {
     const { id } = useParams<{ id: string }>(); // gives already resolved routhe params from client router
@@ -22,7 +23,7 @@ export default function OrderDetailsPage() {
         <main> 
             <h1> Order Detail</h1>
             <p> ID: {order.id} </p>
-            <p> Total Price: ${order.totalPrice}</p>
+            <p> Total Price: {formatMoney(order.totalPrice)}</p>
             
             <h2> Items</h2>
             <ul> 
