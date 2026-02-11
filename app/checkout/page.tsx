@@ -93,7 +93,7 @@ export default function CheckoutPage() {
             <br/>
 
             <button
-            disabled={items.length===0 || isPlacing}
+            disabled={isPlacing}
             onClick={async()=> {
 
                 if(!isFormValid) {

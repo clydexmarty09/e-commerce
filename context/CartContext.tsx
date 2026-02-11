@@ -47,6 +47,7 @@ type CartContextValue = {  // CartContextValue is an object type
     getQuantity : (productId: string)=> number; // function that takes in parameter productID of type string. Returns a number
     removeItem: (productId: string) => void; // removes specific item from cart
     total : number; // data -- totalItems of type number 
+    ordersLoading: boolean; 
 
     placeOrder: (customer: CustomerInfo) =>Promise<Order | null>; // context promises that it provides a placeholder function
     orders: Order[]
@@ -91,6 +92,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
         }
     }) ; */
 
+    const [ordersLoading, setOrdersLoading] = useState(true); 
     const [orders, setOrders] = useState<Order[]>([]);  // add orders state
     const [hydrated, setHydrated] = useState(false); 
     
@@ -202,6 +204,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
             console.log("PlaceOrder error", err); 
             return null  
         }
+
    }; 
 
    //reduce() turns ana array into a single value 
@@ -213,8 +216,8 @@ export function CartProvider({children}: {children: React.ReactNode}) {
     */
    const value = useMemo(
     ()=> ({  // ()=> ({}) means object being returned 
-        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder, orders
-    }), [items, total, orders] // only rvaecompute if something HERE changes 
+        items, addToCart, removeFromCart, clearCart, getQuantity, total, removeItem, placeOrder, orders, ordersLoading
+    }), [items, total, orders, ordersLoading] // only rvaecompute if something HERE changes 
    );
 
    /*
@@ -263,6 +266,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
 
    useEffect(()=> {
         const loadOrders = async() => {
+            setOrdersLoading(true); 
             try {
                 const res = await fetch("/api/orders"); 
                 const data = await res.json(); 
@@ -271,6 +275,8 @@ export function CartProvider({children}: {children: React.ReactNode}) {
                 }
             } catch (e) {
                 console.error("Failed to load orders from API", e); 
+            } finally {
+                setOrdersLoading(false); 
             }
         }; 
         loadOrders();

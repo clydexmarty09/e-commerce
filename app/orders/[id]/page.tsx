@@ -7,8 +7,17 @@ import { formatMoney } from "@/utils/format";
 
 export default function OrderDetailsPage() {
     const { id } = useParams<{ id: string }>(); // gives already resolved routhe params from client router
-    const { orders } = useCart(); 
+    const { orders, ordersLoading } = useCart(); 
     const order = orders.find(o=> o.id === id); 
+
+    if(ordersLoading) {
+        return(
+            <main> 
+                <h1> Loading Orders...</h1>
+                <Link href ="/"> Back to Orders</Link>
+            </main>
+        ); 
+    }
 
     if (!order) {
         return (
