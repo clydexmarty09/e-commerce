@@ -9,7 +9,7 @@ import React, { createContext, useContext, useMemo, useState, useEffect } from "
 // React is needed for React.ReactNode typing 
 
 const CART_STORAGE_KEY = "cartItems";
-const ORDERS_STORAGE_KEY= "orders"; 
+//const ORDERS_STORAGE_KEY= "orders"; 
 
 export type Product = {
     id: string; 
@@ -162,7 +162,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
             return null; 
         }
 
-        await new Promise((resolve)=> setTimeout(resolve, 800)); 
+        /* await new Promise((resolve)=> setTimeout(resolve, 800)); 
 
         const totalPrice = items.reduce((sum, item) => {
             return sum + item.product.price * item.quantity; 
@@ -170,15 +170,38 @@ export function CartProvider({children}: {children: React.ReactNode}) {
 
         const order: Order = {
             id: crypto.randomUUID(), createdAt: Date.now(), items: items, totalPrice: totalPrice, customer
-        };
+        }; */ 
 
-        setOrders((prev) =>{
-            const updated = [order, ...prev]
-            localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(updated))
-            return updated; 
-        })
-        clearCart();  
-        return order; 
+        /*
+         ask the server to create the order 
+        */
+        try {
+            const res = await fetch("/api/orders", { // calls Next.js route handler
+                method: "POST",  // triggers exported POST() function from route.ts 
+                headers: {"Content-Type": "application/json"},  // tells server we're sending JSON
+                body: JSON.stringify({ items, customer }), // converst JS object->JSON string; required because HTTP body must be string/bytes, not JS object
+            }); 
+
+            // read the response 
+            const data = await res.json(); 
+
+            // check for status code 200-299
+            if (!res.ok) {
+                console.log("placeOrder failed", data?.error); 
+                return null; 
+            }
+            
+            const order: Order = data.order; // store in state so /orders can render 
+
+            setOrders((prev)=> 
+                [order, ...prev]);
+            
+            clearCart(); 
+            return order; 
+        } catch (err) {
+            console.log("PlaceOrder error", err); 
+            return null  
+        }
    }; 
 
    //reduce() turns ana array into a single value 
@@ -220,6 +243,7 @@ export function CartProvider({children}: {children: React.ReactNode}) {
 
    }, [items, hydrated]); 
 
+   /* 
    useEffect(() => {
         try {
             const raw = localStorage.getItem(ORDERS_STORAGE_KEY); 
@@ -235,6 +259,21 @@ export function CartProvider({children}: {children: React.ReactNode}) {
             console.error("Failed to load orders from local storage", e); 
         }
         // load orders once 
+   }, []);  */ 
+
+   useEffect(()=> {
+        const loadOrders = async() => {
+            try {
+                const res = await fetch("/api/orders"); 
+                const data = await res.json(); 
+                if(res.ok && Array.isArray(data.orders)) {
+                    setOrders(data.orders); 
+                }
+            } catch (e) {
+                console.error("Failed to load orders from API", e); 
+            }
+        }; 
+        loadOrders();
    }, []); 
 
    return (
