@@ -3,10 +3,47 @@
 import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
 import { formatMoney } from "@/utils/format"; 
+import { useEffect, useState } from "react"; 
+
+type OrderItem = {
+    quantity: number; 
+}; 
+
+type Order = {
+    id: string; createdAt: number; items: OrderItem[]; totalPrice: number; 
+}
 
 export default function OrderPage() {
 
-    const { orders, ordersLoading } = useCart(); 
+    //const { orders, ordersLoading } = useCart(); 
+    const[orders, setOrders] = useState<any[]>([]); 
+    const[ordersLoading, setOrdersLoading] = useState(true); 
+    const[error, setError] = useState<string | null>(null); 
+
+    useEffect(()=> {
+        (async()=> {
+            try {
+                setOrdersLoading(true); 
+                setError(null); 
+
+                const res = await fetch("/api/orders"); 
+
+                if(!res.ok) {
+                    throw new Error('Failed to load orders (HTTP ${res.status})'); 
+                }
+
+                const data = await res.json(); 
+                const list = Array.isArray(data) ? data: data.orders; 
+
+                setOrders(list ?? []); 
+            } catch(e) {
+                setError(e instanceof Error ? e.message: "Failed to load orders"); 
+                setOrders([]); 
+            } finally {
+                setOrdersLoading(false); 
+            }
+        })(); 
+    }, []); 
     if(ordersLoading) {
         return (
             <main> 
