@@ -41,8 +41,8 @@ export async function GET() {
 } */
 
 export async function GET() {
-  const [ordersRows] = await db.query<any[]>(
-    `SELECT * FROM orders ORDER BY created_at DESC`,
+  const [ordersRows] = await db.query<any[]>( //db.query runs sql, returns an array
+    `SELECT * FROM orders ORDER BY created_at DESC`, // get all orders newest first
   );
 
   const [itemsRows] = await db.query<any[]>(
@@ -50,10 +50,15 @@ export async function GET() {
      FROM order_items`,
   );
 
+  /*
+  Map is a JS dictionary-like object. Key order_id string. Value: array of items for that order 
+  */
   const itemsByOrder = new Map<string, any[]>();
   for (const row of itemsRows) {
-    const arr = itemsByOrder.get(row.order_id) ?? [];
+    // loop over each DB row
+    const arr = itemsByOrder.get(row.order_id) ?? []; // returns existing array of undefined
     arr.push({
+      // add item
       product: {
         id: row.product_id,
         name: row.product_name,
@@ -61,10 +66,11 @@ export async function GET() {
       },
       quantity: row.quantity,
     });
-    itemsByOrder.set(row.order_id, arr);
+    itemsByOrder.set(row.order_id, arr); // stores it back
   }
 
   const orders = ordersRows.map((o) => ({
+    // .map(..) transforms each order into shape frontend uses
     id: o.id,
     createdAt: o.created_at,
     totalPrice: Number(o.total_price),
@@ -73,7 +79,7 @@ export async function GET() {
       email: o.customer_email,
       address: o.customer_address,
     },
-    items: itemsByOrder.get(o.id) ?? [],
+    items: itemsByOrder.get(o.id) ?? [], // if no items found, default to empty array
   }));
 
   return NextResponse.json({ orders });
@@ -82,7 +88,7 @@ export async function GET() {
 /*
  POST handler - 
  req: Request is the standard Web API Request object 
-
+JSON->VALIDATION->transation inserts 
 */
 export async function POST(req: Request) {
   try {
@@ -128,15 +134,18 @@ export async function POST(req: Request) {
     const orderId = crypto.randomUUID();
     const createdAt = Date.now();
 
-    const conn = await db.getConnection();
+    const conn = await db.getConnection(); // gets one connection from the pool
     try {
-      await conn.beginTransaction();
+      await conn.beginTransaction(); // either all inserts succeed or none do
 
       await conn.execute(
-        `INSERT INTO orders
+        // run SQL statement on this connection ; returns Promise->result of query
+        // insert one new row into table orders
+        `INSERT INTO orders 
             (id, created_at, total_price, customer_name, customer_email, customer_address)
-            VALUES (?, ?, ?, ?, ?, ?)`,
+            VALUES (?, ?, ?, ?, ?, ?)`, // parameter placeholder
         [
+          // values array
           orderId,
           createdAt,
           totalPrice,
@@ -145,7 +154,7 @@ export async function POST(req: Request) {
           customer.address,
         ],
       );
-
+      // loop through each item of the items array
       for (const item of items) {
         await conn.execute(
           `INSERT INTO order_items
@@ -163,10 +172,10 @@ export async function POST(req: Request) {
 
       await conn.commit();
     } catch (err) {
-      await conn.rollback();
-      throw err;
+      await conn.rollback(); // if error, undo everything done in the transaction
+      throw err; // rethrows so outer try/catch can return 500 later
     } finally {
-      conn.release();
+      conn.release(); // always return connection to pool ; prevents connection leaks
     }
 
     return NextResponse.json(
