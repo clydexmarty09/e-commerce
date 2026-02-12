@@ -1,6 +1,4 @@
 "use client"; 
-
-import { useCart } from "@/context/CartContext"; 
 import Link from "next/link"; 
 import { formatMoney } from "@/utils/format"; 
 import { useEffect, useState } from "react"; 
@@ -16,34 +14,39 @@ type Order = {
 export default function OrderPage() {
 
     //const { orders, ordersLoading } = useCart(); 
-    const[orders, setOrders] = useState<any[]>([]); 
+    const[orders, setOrders] = useState<Order[]>([]); 
     const[ordersLoading, setOrdersLoading] = useState(true); 
     const[error, setError] = useState<string | null>(null); 
 
-    useEffect(()=> {
+    // fetch from backend db API 
+    // run effect when component appears on screen 
+    useEffect(()=> { // Immediately Invoked Async Function expression: define async functuion and run immediately 
         (async()=> {
             try {
-                setOrdersLoading(true); 
-                setError(null); 
+                setOrdersLoading(true);  // mark page as loading
+                setError(null);  // setError(null)
 
-                const res = await fetch("/api/orders"); 
+                // Browser-> fetch-> API route -> DB -> JSON -> back 
+                const res = await fetch("/api/orders");  // send req to /api/orders
 
-                if(!res.ok) {
-                    throw new Error('Failed to load orders (HTTP ${res.status})'); 
+                if(!res.ok) { // check HTTP success (200-299) status codes
+                    throw new Error(`Failed to load orders (HTTP ${res.status})`); 
                 }
 
-                const data = await res.json(); 
+                const data = await res.json();  // parse JSON body
+                
+                //if data is already an array, use it. Else, assume it's { orders: [...]} 
                 const list = Array.isArray(data) ? data: data.orders; 
 
-                setOrders(list ?? []); 
-            } catch(e) {
+                setOrders(list ?? []); // save into React state (if list exists, use it. Else use empty array )
+            } catch(e) { // if anything fails, store error message and clear orders
                 setError(e instanceof Error ? e.message: "Failed to load orders"); 
                 setOrders([]); 
             } finally {
                 setOrdersLoading(false); 
             }
         })(); 
-    }, []); 
+    }, []);  // run effect only once when the component first mounts 
     if(ordersLoading) {
         return (
             <main> 
@@ -53,6 +56,15 @@ export default function OrderPage() {
         ); 
     }
     
+    if(error) {
+        return(
+            <main> 
+                <h1> Couldn't load orders</h1>
+                <p>{error}</p>
+                <Link href="/"> Back to shop</Link>
+            </main>
+        ); 
+    }
     if (orders.length === 0) {
         return (
             <main> 
