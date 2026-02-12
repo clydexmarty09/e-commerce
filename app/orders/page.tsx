@@ -6,7 +6,16 @@ import { formatMoney } from "@/utils/format";
 
 export default function OrderPage() {
 
-    const { orders } = useCart(); 
+    const { orders, ordersLoading } = useCart(); 
+    if(ordersLoading) {
+        return (
+            <main> 
+                <h1> Loading orders...</h1>
+                <Link href="/"> Back to Shop</Link>
+            </main>
+        ); 
+    }
+    
     if (orders.length === 0) {
         return (
             <main> 
