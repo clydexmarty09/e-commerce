@@ -2,9 +2,6 @@ import { products } from "@/data/products";
 import { formatMoney } from "@/utils/format";
 import { db } from "@/lib/db"; 
 import Link from "next/link"; 
-import { useEffect, useState } from "react"; 
-import { useParams } from "next/navigation"; 
-import { useCart } from "@/context/CartContext"; 
 
 type Product = {
     name: string; 
@@ -17,17 +14,19 @@ export default async function ProductDetailPage({
     params, }: { params: { id: string }
 }) {
 
+   
     const id = params. id;
+    console.log("ProductDetailPage params.id = ", id); 
 
     //debugging
     console.log("PRODUCTS", products); 
     console.log("PARAMS ID:", id); 
 
     const [rows] = await db.query<any[]> (
-       `SELECT id, name, price, image
+       `SELECT id, name, price_cents, image
         FROM products
         WHERE id = ? 
-        LIMIT 1`, 
+        LIMIT 1`, [id]
     ); 
 
     if(!rows || rows.length === 0) {
