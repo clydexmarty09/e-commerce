@@ -1,3 +1,4 @@
+"use client"; 
 import { useCart } from "@/context/CartContext"; 
 
 type Product = {
@@ -8,7 +9,7 @@ type Product = {
 
 }
 
-export default function addToCartButton({product}: {product: Product} ) {
+export default function AddToCartButton({product}: {product: Product} ) {
 
     const { addToCart } = useCart(); 
 

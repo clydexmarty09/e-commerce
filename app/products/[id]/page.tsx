@@ -2,6 +2,7 @@
 import { formatMoney } from "@/utils/format";
 import { db } from "@/lib/db"; 
 import Link from "next/link"; 
+import AddToCartButton from "./addToCart"; 
 
 type Product = {
     name: string; 
@@ -11,17 +12,23 @@ type Product = {
 }
 
 export default async function ProductDetailPage({
-    params, }: { params: { id: string }
+    params, }: { params: Promise<{ id: string }>; 
 }) {
 
    
-    const id = params. id;
+    const {id} =  await params; 
+
     console.log("ProductDetailPage params.id = ", id); 
 
     //debugging
     //console.log("PRODUCTS", products); 
     //console.log("PARAMS ID:", id); 
 
+const [allIds] = await db.query<any[]>(
+  `SELECT id FROM products ORDER BY id LIMIT 10`
+);
+
+console.log("DB product ids sample:", allIds);
     const [rows] = await db.query<any[]> (
        `SELECT id, name, price_cents, image
         FROM products
@@ -52,6 +59,7 @@ export default async function ProductDetailPage({
             <h1> {product.name} </h1>
             <p> Price: {formatMoney(product.price)} </p>
             <p> ID: {product.id} </p>
+            <AddToCartButton product={product}/>
             <Link href="/"> Back to Products</Link>
         </main>
     ); 
