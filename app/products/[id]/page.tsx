@@ -1,4 +1,4 @@
-import { products } from "@/data/products"; 
+//import { products } from "@/data/products"; 
 import { formatMoney } from "@/utils/format";
 import { db } from "@/lib/db"; 
 import Link from "next/link"; 
@@ -19,8 +19,8 @@ export default async function ProductDetailPage({
     console.log("ProductDetailPage params.id = ", id); 
 
     //debugging
-    console.log("PRODUCTS", products); 
-    console.log("PARAMS ID:", id); 
+    //console.log("PRODUCTS", products); 
+    //console.log("PARAMS ID:", id); 
 
     const [rows] = await db.query<any[]> (
        `SELECT id, name, price_cents, image
@@ -42,7 +42,7 @@ export default async function ProductDetailPage({
     const product: Product = {
         id: r.id, 
         name: r.name, 
-        price: r.price, 
+        price: Number(r.price_cents) / 100, 
         image: r.image ?? undefined 
     }; 
 
