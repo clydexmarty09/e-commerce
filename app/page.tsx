@@ -45,12 +45,12 @@ export default function Home() {
   }, []); 
   return (
   <main> 
-    <h1> Products</h1>
+    <h1 className="text-3xl font-bold"> Products</h1>
     {loading && <p> Loading...</p>}
     {error && <p> Error: {error}</p>}
     {!loading && !error && (
      <ProductList products= {products} />
-    )}
+    )}s
     <Link href="/cart"> Go To Cart ({total})</Link> 
     
   </main>
