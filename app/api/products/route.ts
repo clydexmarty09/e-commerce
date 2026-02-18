@@ -16,13 +16,19 @@ export async function GET() {
   return NextResponse.json({ products });
 }
 
+/* 
 export async function POST(req: Request) {
+  console.log("POST /api/products hit");
   try {
     const body = await req.json();
 
-    const id = String(body.id).trim(); // e.g. "p4"
+    const raw = await req.text();
+    //debugging
+    console.log("RAW BODY=", raw);
+
+    const id = String(body.id).trim();
     const name = String(body.name).trim();
-    const price = Number(body.price); // dollars
+    const price = Number(body.price);
     const image = body.image ? String(body.image) : null;
 
     if (!id || !name) {
@@ -53,5 +59,44 @@ export async function POST(req: Request) {
     );
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+}*/
+
+export async function POST(req: Request) {
+  console.log("POST /api/products hit");
+
+  // 1) Parse JSON (only this should return "Invalid JSON")
+  let body: any;
+  try {
+    body = await req.json();
+  } catch (err) {
+    console.error("JSON parse failed:", err);
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // 2) DB insert (if this fails, we’ll see the real reason)
+  try {
+    console.log("BODY =", body);
+
+    const id = String(body.id).trim();
+    const name = String(body.name).trim();
+    const price = Number(body.price);
+    const image = body.image ? String(body.image) : null;
+
+    const priceCents = Math.round(price * 100);
+
+    await db.query(
+      `INSERT INTO products (id, name, price_cents, image, created_at)
+       VALUES (?, ?, ?, ?, NOW())`,
+      [id, name, priceCents, image],
+    );
+
+    return NextResponse.json({ ok: true }, { status: 201 });
+  } catch (err) {
+    console.error("DB insert failed:", err);
+    return NextResponse.json(
+      { error: "DB insert failed (check server logs)" },
+      { status: 500 },
+    );
   }
 }
