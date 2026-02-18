@@ -105,3 +105,14 @@ export async function PUT(
 
   return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(
+  _rew: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
+  await db.query(`DELETE FROM products WHERE id = ?`, [id]);
+
+  return NextResponse.json({ ok: true });
+}
