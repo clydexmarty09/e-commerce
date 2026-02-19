@@ -49,7 +49,7 @@ console.log("DB product ids sample:", allIds);
     const product: Product = {
         id: r.id, 
         name: r.name, 
-        price: Number(r.price_cents) / 100, 
+        price: Number(r.price_cents) / 100, // becase db cannot store cents 
         image: r.image ?? undefined 
     }; 
 
