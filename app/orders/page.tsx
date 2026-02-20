@@ -77,8 +77,8 @@ export default function OrderPage() {
         return (
 
             <main> 
-                <h1> Order Information: </h1>
-                <ul> 
+                <h1 className="text-3xl my-2"> Order Information: </h1>
+                <ul className="flex flex-col gap-4"> 
                     {orders.map((order)=> (
                         <li key={order.id}> 
                             <p> Date ordered: {new Date(order.createdAt).toLocaleString()}</p>
@@ -89,7 +89,7 @@ export default function OrderPage() {
                         </li>
                     ))}
                 </ul>
-                <Link href="/"> Back to Shop</Link>
+                <Link className="links" href="/"> Back to Shop</Link>
             </main>
         ); 
     }
