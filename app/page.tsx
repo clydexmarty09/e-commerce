@@ -51,7 +51,7 @@ export default function Home() {
     {!loading && !error && (
      <ProductList products= {products} />
     )}
-    <Link className="links" href="/cart"> Go To Cart ({total})</Link> 
+    <Link className="p-2 hover:bg-green-500/10 border border-green-500/30 rounded-md font-semibold mt-8 inline-block text-green-300 hover:text-green-200" href="/cart"> Go To Cart ({total})</Link> 
     
   </main>
   )
