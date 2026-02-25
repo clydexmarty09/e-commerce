@@ -107,9 +107,9 @@ export default function CheckoutPage() {
                     </div>
                 </label>
             </div> 
-        ç
+
             <button
-            className="mt-12 font-semibold btn btn-hover border border-green-500/30 w-full"
+            className="mt-4 font-semibold btn btn-hover border border-green-500/30 w-full max-w-xl"
             disabled={isPlacing}
             onClick={async()=> {
 
@@ -139,6 +139,12 @@ export default function CheckoutPage() {
                 setIsPlacing(false); 
             }
             }}> {isPlacing ? "Placing...": "Place Order"} </button>  
+    
+        {error && (      
+            <div className="w-full mt-4 max-w-xl rounded-md border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {error}
+            </div>
+        )}
         
         </main>
     ); 
