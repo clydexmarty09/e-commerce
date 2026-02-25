@@ -37,7 +37,7 @@ export default function CartPage() {
             
             <div className="flex items-center gap-2"> 
                 <button
-                    className="btn border border-green-500/30"
+                    className="btn btn-hover border border-green-500/30"
                     disabled={item.quantity === 1}
                     onClick={() => removeFromCart(item.product.id)}
                 >
@@ -46,8 +46,8 @@ export default function CartPage() {
 
                 <span className="w-8 text-center"> {item.quantity} </span>
 
-                <button className="btn border border-green-500/30" onClick={() => addToCart(item.product)}>[+]</button>
-                <button className="btn border border-green-500/30" onClick={() => removeItem(item.product.id)}>Remove</button>
+                <button className="btn btn-hover border border-green-500/30" onClick={() => addToCart(item.product)}>[+]</button>
+                <button className="btn btn-hover border border-green-500/30" onClick={() => removeItem(item.product.id)}>Remove</button>
             </div>
             </div>
         );
