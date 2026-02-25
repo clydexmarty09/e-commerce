@@ -39,57 +39,59 @@ export default function CheckoutPage() {
         name.trim().length>0 && address.trim().length>0 && email.trim().length>0; 
     
     return (
-        <main> 
-            <h1> Checkout</h1>
-            <ul> 
+        <main className="flex flex-col items-center w-full"> 
+            <h1 className="py-4 my-2 text-3xl font-semibold"> Checkout</h1>
+            <ul className="gap-6 flex flex-col py-8 px-8 border border-green-500/30 rounded-md"> 
                 {items.map ((item) =>(
 
-                    <li key={item.product.id}> 
+                    <li className="font-medium truncate" key={item.product.id}> 
                     {item.product.name} - qty: {item.quantity} - 
-                    <span> ${item.product.price * item.quantity}</span>
+                    <span className="opacity-80"> ${item.product.price * item.quantity}</span>
                     </li>
                 ))}
             </ul>
-
-            <p> Total items: { total } </p>
-            <p> Total price: {formatMoney(totalPrice)} </p>
-            {error && <p>{error} </p>} {/*only display error if it exists   */}
             
-            <label> 
-                Name: 
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e)=> {
-                        setName(e.target.value)
-                        setError(null); 
-                    }}
-                />
-            </label>
-            <br/>
-            <label> 
-                Email:
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e)=> {
-                        setEmail(e.target.value)
-                        setError(null); 
-                    }} //onChange = event handler that runs when an input's value changes
-                />
-            </label>
-            <br/>
-            <label> 
-                Adress: 
-                <input
-                    type="text"
-                    value={address}
-                    onChange={(e)=> { 
-                        setAddress(e.target.value)
-                        setError(null); 
-                    }}
-                />
-            </label>
+            <div className=" text-center flex flex-col py-6"> 
+                <p className="font-semibold"> Total items: { total } </p>
+                <p className="text-xs opacity-80"> Total price: {formatMoney(totalPrice)} </p>
+            </div>
+            <div> 
+                <label> 
+                    Name: 
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e)=> {
+                            setName(e.target.value)
+                            setError(null); 
+                        }}
+                    />
+                </label>
+                <br/>
+                <label> 
+                    Email:
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e)=> {
+                            setEmail(e.target.value)
+                            setError(null); 
+                        }} //onChange = event handler that runs when an input's value changes
+                    />
+                </label>
+                <br/>
+                <label> 
+                    Adress: 
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e)=> { 
+                            setAddress(e.target.value)
+                            setError(null); 
+                        }}
+                    />
+                </label>
+            </div> 
             <br/>
 
             <button
